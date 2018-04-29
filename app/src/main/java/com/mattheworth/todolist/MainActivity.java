@@ -4,12 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import android.widget.RelativeLayout;
+import android.view.View;
 import android.widget.Button;
-import android.graphics.Color;
 import android.widget.EditText;
-import android.content.res.Resources;
-import android.util.TypedValue;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,58 +25,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.i(TAG, ": onCreate()");
 
-//        // Create a new Relative Layout for the UI
-//        RelativeLayout todoLayout = new RelativeLayout(this);
-//        todoLayout.setBackgroundColor(Color.YELLOW);
-//
-//        // Create a new button
-//        Button createButton = new Button(this);
-//        createButton.setText(getResources().getString(R.string.create_button));
-//        createButton.setTextColor(Color.WHITE);
-//        createButton.setBackgroundColor(Color.BLACK);
-//        createButton.setId(1);
-//
-//        // Create an input field
-//        EditText inputField = new EditText(this);
-//
-//        // Create the layout parameters (container)
-//        RelativeLayout.LayoutParams buttonInfo = new RelativeLayout.LayoutParams(
-//                // Get the height and width of the button automatically
-//                RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT
-//        );
-//
-//        // Create the layout parameters (container)
-//        RelativeLayout.LayoutParams inputFieldInfo = new RelativeLayout.LayoutParams(
-//                // Get the height and width of the input field automatically
-//                RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT
-//        );
-//
-//        // Align the button position
-//        buttonInfo.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        buttonInfo.addRule(RelativeLayout.CENTER_VERTICAL);
-//
-//        // Align the input field on the layout
-//        inputFieldInfo.addRule(RelativeLayout.ABOVE, createButton.getId());
-//        inputFieldInfo.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        inputFieldInfo.setMargins(0,0,0,50);
-//
-//        // Get information about the app
-//        Resources r = getResources();
-//
-//        // Convert dip to pixels and store in variable
-//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
-//
-//        // Make the input be the same size on each display
-//        inputField.setWidth(px);
-//
-//        // Add the button to the layout
-//        todoLayout.addView(createButton, buttonInfo);
-//        todoLayout.addView(inputField, inputFieldInfo);
-//
-//        // Set the content view to display the created layout
-//        setContentView(todoLayout);
+        // Create an object that matches the todo input button
+        Button createButton = (Button) findViewById(R.id.create_button);
+
+        // Handle the situation when the button is clicked
+        createButton.setOnClickListener(
+                // Create the interface to handle the button click
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        // Set the text in the middle of the screen to what the use entered in the input field
+                        TextView todoCreateText = (TextView) findViewById(R.id.todo_create_text);
+                        EditText todoInput = (EditText) findViewById(R.id.todo_input_text);
+                        todoCreateText.setText(todoInput.getText());
+                        todoInput.setText("");
+                    }
+                }
+        );
 
     }
 

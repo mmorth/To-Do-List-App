@@ -8,4 +8,13 @@
 
     <!-- Java UI Strings -->
     <string name="create_button">Create</string>
+
+    <!-- Layout Strings -->
+    <string name="bottom_menu_info">Info</string>
+    <string name="bottom_menu_edit">Edit</string>
+    <string name="bottom_menu_delete">Delete</string>
+    <string name="bottom_menu_complete">Complete</string>
+
+    <!-- Temporary Strings -->
+    <string name="temp_todo_submit_text">Temporary</string>
 </resources>
