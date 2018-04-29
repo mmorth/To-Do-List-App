@@ -1,4 +1,4 @@
-package com.mattheworth.to_do_list_app;
+package com.mattheworth.todolist;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.mattheworth.to_do_list_app", appContext.getPackageName());
+        assertEquals("com.mattheworth.todolist", appContext.getPackageName());
     }
 }

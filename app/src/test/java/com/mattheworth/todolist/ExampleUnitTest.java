@@ -1,4 +1,4 @@
-package com.mattheworth.to_do_list_app;
+package com.mattheworth.todolist;
 
 import org.junit.Test;
 
