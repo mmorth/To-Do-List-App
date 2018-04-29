@@ -1,3 +1,11 @@
 <resources>
+    <!-- General App Strings -->
     <string name="app_name">To Do List</string>
+
+    <!-- Create To Do Strings -->
+    <string name="todo_input_suggestion">Type your todo here</string>
+    <string name="create_todo">Create</string>
+
+    <!-- Java UI Strings -->
+    <string name="create_button">Create</string>
 </resources>
