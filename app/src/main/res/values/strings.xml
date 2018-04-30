@@ -17,4 +17,6 @@
 
     <!-- Temporary Strings -->
     <string name="temp_todo_submit_text">Temporary</string>
+    <string name="title_list_list">Lists</string>
+    <string name="title_list_detail">List Detail</string>
 </resources>
