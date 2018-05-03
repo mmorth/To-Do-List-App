@@ -1,5 +1,7 @@
 package com.mattheworth.todolist;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -12,11 +14,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import junit.framework.Test;
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    /**
+     * Represents the to do list number
+     */
+    int todoTagNum = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +67,25 @@ public class MainActivity extends AppCompatActivity
         createTodoButton.setOnClickListener (
             new Button.OnClickListener() {
                 public void onClick(View v) {
-                    // Create a new to do fragment in the scroll list
+                    // Initialize the FragmentManager and FragmentTransaction
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    // Create reference to the TextView for the to do title
+                    EditText todoTitle = (EditText) findViewById(R.id.todoInput);
+
+                    // Create a to do fragment object
+                    TodoFragment todoFragment = new TodoFragment();
+                    todoFragment.setToDoTitle(todoTitle.getText());
+                    todoTitle.setText("");
+
+                    // Set the tag for the to do list item
+                    String todoTag = "todoListItem" + todoTagNum;
+                    todoTagNum++;
+
+                    // Add the to do item to the scroll list with the to do tag
+                    fragmentTransaction.add(R.id.todoList, todoFragment, todoTag);
+                    fragmentTransaction.commit();
                 }
             }
         );
