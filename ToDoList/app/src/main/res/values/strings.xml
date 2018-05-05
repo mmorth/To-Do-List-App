@@ -10,4 +10,8 @@
     <string name="create_todo_text">Create</string>
     <string name="delete_todo_text">Delete</string>
     <string name="delete_todo">Delete</string>
+    <string name="todo_priority">Priority:</string>
+    <string name="todo_label">Label:</string>
+    <string name="todo_details_subtask_input">Type subtask here</string>
+    <string name="todo_details_description_hint">Write the to do description here</string>
 </resources>
