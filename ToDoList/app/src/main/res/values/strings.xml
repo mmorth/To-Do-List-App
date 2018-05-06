@@ -14,4 +14,5 @@
     <string name="todo_label">Label:</string>
     <string name="todo_details_subtask_input">Type subtask here</string>
     <string name="todo_details_description_hint">Write the to do description here</string>
+    <string name="title_activity_todo_details">TodoDetailsActivity</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,23 +21,35 @@ public class TodoFragment extends Fragment {
     /**
      * Refers to the CheckBox object
      */
-    CheckBox todoCheckBox;
+    private CheckBox todoCheckBox;
 
     /**
      * Refers to the TextView object
      */
-    TextView todoTitle;
+    private TextView todoTitle;
 
     /**
      * Refers to the to do delete button
      */
-    Button todoDelete;
+    private Button todoDelete;
+
+    /**
+     * Represents the to do item title
+     */
+    private String todoItemTitle;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Initialize the fragment
         View view = inflater.inflate(R.layout.todo_fragment, container, false);
+
+        Bundle args = getArguments();
+
+        if (args != null && args.getString("todoTitle", "") != null) {
+            todoItemTitle = args.getString("todoTitle", "");
+            Log.d("OUTPUT: ", todoItemTitle);
+        }
 
         // Create references for each component in the fragment
         todoCheckBox = (CheckBox) view.findViewById(R.id.todoCheckOff);
@@ -66,12 +79,10 @@ public class TodoFragment extends Fragment {
     }
 
     /**
-     * Sets the title of the to do
-     * @param title
-     *      The new title of the to do
+     * USED FOR TESTING PURPOSES ONLY
      */
-    public void setToDoTitle(String title) {
-        todoTitle.setText(title);
+    public String getToDoTitle() {
+        return todoItemTitle;
     }
 
 }

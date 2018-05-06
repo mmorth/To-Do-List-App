@@ -1,9 +1,6 @@
 package com.mattheworth.todolist;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,19 +11,45 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
 
+/**
+ * The MainActivity of the to do list application.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * Represents the to do list number
      */
-    int todoTagNum = 1;
+    private int todoTagNum = 1;
+
+    /**
+     * Represents the createTodoButton
+     */
+    private Button createTodoButton;
+
+    /**
+     * Represents the to do input title
+     */
+    private EditText todoInputTitle;
+
+    /**
+     * Represents the main to do scroll list
+     */
+    private ListView todoListView;
+
+    /**
+     * Represents the list that will be used to populate the to do list ListView
+     */
+    private static ArrayList<String> todoItemList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +60,6 @@ public class MainActivity extends AppCompatActivity
         // Initialize the Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         // Initialize the DrawerLayout
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -61,37 +75,44 @@ public class MainActivity extends AppCompatActivity
         // Prevent the keyboard from popping up when first running the app
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        // Create reference to the create to do button
-        Button createTodoButton = (Button) findViewById(R.id.createTodoButton);
+        // Create the references to the android layout components
+        createTodoButton = (Button) findViewById(R.id.createTodoButton);
+        todoInputTitle = (EditText) findViewById(R.id.todoInput);
+
+        // Create a reference to the ListView
+        todoListView = (ListView) findViewById(R.id.todoList);
+
+        String[] tasks = {"Mow", "Eat", "Work"};
+
+        ListAdapter todoListAdapter = new TodoAdapter(this, tasks);
+        todoListView.setAdapter(todoListAdapter);
 
         // Create a new to do list card when the user taps the create button.
         createTodoButton.setOnClickListener (
             new Button.OnClickListener() {
                 public void onClick(View v) {
-                    // Initialize the FragmentManager and FragmentTransaction
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    // Create reference to the TextView for the to do title
-                    EditText todoTitle = (EditText) findViewById(R.id.todoInput);
-
-                    // Create a to do fragment object
-                    TodoFragment todoFragment = new TodoFragment();
-                    todoFragment.setToDoTitle(todoTitle.getText().toString());
-                    todoTitle.setText("");
-
-                    // Set the tag for the to do list item
-                    String todoTag = "todoListItem" + todoTagNum;
-                    todoTagNum++;
-
-                    // Add the to do item to the scroll list with the to do tag
-                    fragmentTransaction.add(R.id.todoList, todoFragment, todoTag);
-                    fragmentTransaction.commit();
+                    if (todoInputTitle.getText() != null || todoInputTitle.getText().toString() != "") {
+                        todoItemList.add(todoInputTitle.getText().toString());
+                        todoInputTitle.setText("");
+                    }
                 }
             }
         );
 
+        // Determine the action to complete if an individual to do list item is clicked
+        todoListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        // Render the to do details activity page
+
+                    }
+                }
+        );
+
     }
+
+    // ----------------------- Drawer Menu Methods ------------------------------------
 
     @Override
     public void onBackPressed() {

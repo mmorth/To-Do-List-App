@@ -7,15 +7,17 @@
 
     <EditText
         android:id="@+id/todoDetailsTitle"
-        android:layout_width="0dp"
+        android:layout_width="278dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/todoDetailsDescription"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.973"
+        app:layout_constraintStart_toEndOf="@+id/todoDetailsBackButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/todoDetailsCreateButton">
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsBackButton">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -128,5 +130,20 @@
         app:layout_constraintEnd_toStartOf="@+id/todoDetailsLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/todoDetailsPriorityLabel" />
+    s
+
+    <Button
+        android:id="@+id/todoDetailsBackButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="305dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:text="Back"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsSubtaskList"
+        app:layout_constraintEnd_toStartOf="@+id/todoDetailsTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
