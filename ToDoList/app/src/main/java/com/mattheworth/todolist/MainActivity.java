@@ -1,6 +1,9 @@
 package com.mattheworth.todolist;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -82,18 +85,18 @@ public class MainActivity extends AppCompatActivity
         // Create a reference to the ListView
         todoListView = (ListView) findViewById(R.id.todoList);
 
-        String[] tasks = {"Mow", "Eat", "Work"};
-
-        ListAdapter todoListAdapter = new TodoAdapter(this, tasks);
-        todoListView.setAdapter(todoListAdapter);
+        final Context context = this;
 
         // Create a new to do list card when the user taps the create button.
         createTodoButton.setOnClickListener (
             new Button.OnClickListener() {
                 public void onClick(View v) {
-                    if (todoInputTitle.getText() != null || todoInputTitle.getText().toString() != "") {
+                    if (todoInputTitle.getText() != null && todoInputTitle.getText().toString().length() != 0) {
                         todoItemList.add(todoInputTitle.getText().toString());
                         todoInputTitle.setText("");
+
+                        ListAdapter todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+                        todoListView.setAdapter(todoListAdapter);
                     }
                 }
             }
@@ -105,7 +108,10 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         // Render the to do details activity page
-
+                        Intent todoDetailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
+                        String todoTitle = String.valueOf(parent.getItemAtPosition(position));
+                        todoDetailsIntent.putExtra("todoTitle", todoTitle);
+                        startActivity(todoDetailsIntent);
                     }
                 }
         );

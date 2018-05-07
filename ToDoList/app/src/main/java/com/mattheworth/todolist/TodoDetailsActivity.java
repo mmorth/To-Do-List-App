@@ -1,5 +1,6 @@
 package com.mattheworth.todolist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,69 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 public class TodoDetailsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    /**
+     * Represents the to do title
+     */
+    EditText todoDetailsTitle;
+
+    /**
+     * Represents the to do description widget
+     */
+    EditText todoDetailsDescription;
+
+    /**
+     * Represents the to do drop down priority menu widget
+     */
+    Spinner todoDetailsPriority;
+
+    /**
+     * Represents the to do label widget
+     */
+    EditText todoDetailsLabel;
+
+    /**
+     * Represents the to do subtask input widget
+     */
+    EditText todoSubtaskInput;
+
+    /**
+     * Represents the to do details create button widget
+     */
+    Button todoDetailsCreateButton;
+
+    /**
+     * Represents the to do details subtask list
+     */
+    ListView todoDetailsSubtaskList;
+
+    /**
+     * Represents the to do details priority label
+     */
+    TextView todoDetailsPriorityLabel;
+
+    /**
+     * Represents the to do details label TextView
+     */
+    TextView todoDetailsLabelLabel;
+
+    /**
+     * Represents the to do details back button
+     */
+    Button todoDetailsBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,15 +83,6 @@ public class TodoDetailsActivity extends AppCompatActivity
         setContentView(R.layout.activity_todo_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -40,6 +92,29 @@ public class TodoDetailsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Prevent the keyboard from popping up when first running the app
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        // Pass information from the previous activity
+        Intent mainIntent = getIntent();
+        String todoTitle = mainIntent.getStringExtra("todoTitle");
+
+        // Initialize the widget references
+        todoDetailsTitle = (EditText) findViewById(R.id.todoDetailsTitle);
+        todoDetailsDescription = (EditText) findViewById(R.id.todoDetailsDescription);
+        todoDetailsPriority = (Spinner) findViewById(R.id.todoDetailsPriority);
+        todoDetailsLabel = (EditText) findViewById(R.id.todoDetailsLabel);
+        todoSubtaskInput = (EditText) findViewById(R.id.todoDetailsSubtaskInput);
+        todoDetailsCreateButton = (Button) findViewById(R.id.todoDetailsCreateButton);
+        todoDetailsSubtaskList = (ListView) findViewById(R.id.todoDetailsSubtaskList);
+        todoDetailsPriorityLabel = (TextView) findViewById(R.id.todoDetailsPriorityLabel);
+        todoDetailsLabelLabel = (TextView) findViewById(R.id.todoDetailsLabelLabel);
+        todoDetailsBackButton = (Button) findViewById(R.id.todoDetailsBackButton);
+
+        todoDetailsTitle.setText(todoTitle);
+
     }
 
     @Override
@@ -77,25 +152,25 @@ public class TodoDetailsActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 }

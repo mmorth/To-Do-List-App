@@ -4,10 +4,147 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:windowSoftInputMode="adjustPan"
+    android:isScrollContainer="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".TodoDetailsActivity"
     tools:showIn="@layout/app_bar_todo_details">
 
+    <EditText
+        android:id="@+id/todoDetailsTitle"
+        android:layout_width="264dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.973"
+        app:layout_constraintStart_toEndOf="@+id/todoDetailsBackButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/todoDetailsDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:hint="@string/todo_details_description_hint"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsPriorityLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsTitle" />
+
+    <Spinner
+        android:id="@+id/todoDetailsPriority"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="17dp"
+        android:entries="@array/todoDetailsSpinnerItems"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/todoDetailsPriorityLabel" />
+
+    <EditText
+        android:id="@+id/todoDetailsLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsSubtaskInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/todoDetailsLabelLabel" />
+
+    <EditText
+        android:id="@+id/todoDetailsSubtaskInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="11dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:hint="@string/todo_details_subtask_input"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@+id/todoDetailsCreateButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/todoDetailsCreateButton" />
+
+    <Button
+        android:id="@+id/todoDetailsCreateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="19dp"
+        android:text="@string/create_todo_text"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsSubtaskList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/todoDetailsSubtaskInput"
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsLabelLabel" />
+
+    <TextView
+        android:id="@+id/todoDetailsPriorityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/todo_priority"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsLabelLabel"
+        app:layout_constraintEnd_toStartOf="@+id/todoDetailsPriority"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsDescription" />
+
+    <TextView
+        android:id="@+id/todoDetailsLabelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/todo_label"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsCreateButton"
+        app:layout_constraintEnd_toStartOf="@+id/todoDetailsLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsPriorityLabel" />
+
+
+    <Button
+        android:id="@+id/todoDetailsBackButton"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="305dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:text="&lt;-"
+        app:layout_constraintBottom_toTopOf="@+id/todoDetailsSubtaskList"
+        app:layout_constraintEnd_toStartOf="@+id/todoDetailsTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/todoDetailsSubtaskList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todoDetailsBackButton" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string-array name="todoDetailsSpinnerItems">
+        <item>1 - Urgent</item>
+        <item>2 - Important</item>
+        <item>3 - Small</item>
+    </string-array>
 </resources>
