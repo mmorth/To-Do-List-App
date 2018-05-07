@@ -57,10 +57,18 @@ public class MainActivity extends AppCompatActivity
     private static ArrayList<String> todoItemList = new ArrayList<>();
 
     /**
+     * Represents the database handler for working with SQLite
+     */
+    private DBHandler dbHandler;
+
+    /**
      * Represents the to do ListView adapater
      */
     ListAdapter todoListAdapter;
 
+    /**
+     * Represents the context for the MainActivity
+     */
     Context context;
 
     @Override
@@ -125,7 +133,22 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
+
+        // SQLite database information
+        dbHandler = new DBHandler(this, null, null, 1);
+
+
+
+
     }
+
+
+    public void printDatabase() {
+        String dbString = dbHandler.databaseToString();
+
+    }
+
+    // Need to add and remove the Todo objects to and from the database when they are created and deleted
 
     /**
      * Deletes a to do item from the list
@@ -139,6 +162,23 @@ public class MainActivity extends AppCompatActivity
         todoItemList.remove(task);
         todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
+    }
+
+    /**
+     * Completes a to do item from the list and puts it in an archive list
+     * @param view
+     *      The view to delete the to do from
+     */
+    public void completeTodo(View view) {
+        View parent = (View) view.getParent();
+        TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
+        String task = String.valueOf(taskTextView.getText());
+        todoItemList.remove(task);
+        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        todoListView.setAdapter(todoListAdapter);
+
+        // Put the completed to do in an archive list
+
     }
 
     // ----------------------- Drawer Menu Methods ------------------------------------

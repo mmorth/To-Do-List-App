@@ -1,5 +1,6 @@
 package com.mattheworth.todolist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,12 +17,14 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TodoDetailsActivity extends AppCompatActivity
@@ -77,6 +80,21 @@ public class TodoDetailsActivity extends AppCompatActivity
      */
     Button todoDetailsBackButton;
 
+    /**
+     * Stores the to do details subtasks
+     */
+    ArrayList<String> todoDetailsSubtasks = new ArrayList<>();
+
+    /**
+     * Represents the to do ListView adapater
+     */
+    ListAdapter todoListAdapter;
+
+    /**
+     * Represents the context for the MainActivity
+     */
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +133,66 @@ public class TodoDetailsActivity extends AppCompatActivity
 
         todoDetailsTitle.setText(todoTitle);
 
+        context = this;
+
+        // Create a new to do list card when the user taps the create button.
+        todoDetailsCreateButton.setOnClickListener (
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        if (todoSubtaskInput.getText() != null && todoSubtaskInput.getText().toString().length() != 0) {
+                            todoDetailsSubtasks.add(todoSubtaskInput.getText().toString());
+                            todoSubtaskInput.setText("");
+
+                            todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+                            todoDetailsSubtaskList.setAdapter(todoListAdapter);
+                        }
+                    }
+                }
+        );
+
     }
+
+    /**
+     * Deletes a to do item from the list
+     * @param view
+     *      The view to delete the to do from
+     */
+    public void deleteTodo(View view) {
+        View parent = (View) view.getParent();
+        TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
+        String task = String.valueOf(taskTextView.getText());
+        todoDetailsSubtasks.remove(task);
+        todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+        todoDetailsSubtaskList.setAdapter(todoListAdapter);
+    }
+
+    /**
+     * Completes a to do item from the list and puts it in an archive list
+     * @param view
+     *      The view to delete the to do from
+     */
+    public void completeTodo(View view) {
+        View parent = (View) view.getParent();
+        TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
+        String task = String.valueOf(taskTextView.getText());
+        todoDetailsSubtasks.remove(task);
+        todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+        todoDetailsSubtaskList.setAdapter(todoListAdapter);
+
+        // Put the completed to do in an archive list
+
+    }
+
+    /**
+     * Goes back to the previous page
+     * @param view
+     *      The current view
+     */
+    public void goBack(View view) {
+        finish();
+    }
+
+    // -------------------------- Drawer Menu Methods --------------------------
 
     @Override
     public void onBackPressed() {
