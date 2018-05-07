@@ -1,6 +1,7 @@
 //package com.mattheworth.todolist;
 //
 //import android.content.Context;
+//import android.graphics.Canvas;
 //import android.support.annotation.Nullable;
 //import android.util.AttributeSet;
 //import android.view.LayoutInflater;
@@ -8,6 +9,7 @@
 //import android.view.ViewGroup;
 //import android.widget.Button;
 //import android.widget.CheckBox;
+//import android.widget.CompoundButton;
 //import android.widget.LinearLayout;
 //import android.widget.TextView;
 //
@@ -61,6 +63,11 @@
 //
 //    }
 //
+//
+//    @Override
+//    protected void onDraw(Canvas canvas) {
+//
+//    }
 //
 //    public void setTodoTitle(String title) {
 //        todoItemTitle = title;

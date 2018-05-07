@@ -2,6 +2,7 @@ package com.mattheworth.todolist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -54,6 +56,13 @@ public class MainActivity extends AppCompatActivity
      */
     private static ArrayList<String> todoItemList = new ArrayList<>();
 
+    /**
+     * Represents the to do ListView adapater
+     */
+    ListAdapter todoListAdapter;
+
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Display the correct initial layout of the app
@@ -85,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         // Create a reference to the ListView
         todoListView = (ListView) findViewById(R.id.todoList);
 
-        final Context context = this;
+        context = this;
 
         // Create a new to do list card when the user taps the create button.
         createTodoButton.setOnClickListener (
@@ -95,7 +104,7 @@ public class MainActivity extends AppCompatActivity
                         todoItemList.add(todoInputTitle.getText().toString());
                         todoInputTitle.setText("");
 
-                        ListAdapter todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+                        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
                         todoListView.setAdapter(todoListAdapter);
                     }
                 }
@@ -116,6 +125,20 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
+    }
+
+    /**
+     * Deletes a to do item from the list
+     * @param view
+     *      The view to delete the to do from
+     */
+    public void deleteTodo(View view) {
+        View parent = (View) view.getParent();
+        TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
+        String task = String.valueOf(taskTextView.getText());
+        todoItemList.remove(task);
+        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        todoListView.setAdapter(todoListAdapter);
     }
 
     // ----------------------- Drawer Menu Methods ------------------------------------
