@@ -150,6 +150,8 @@ public class TodoDetailsActivity extends AppCompatActivity
                 }
         );
 
+        MyEditTextDatePicker myEditTextDatePicker = new MyEditTextDatePicker(context);
+
     }
 
     /**

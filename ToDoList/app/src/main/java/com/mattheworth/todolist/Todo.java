@@ -1,11 +1,33 @@
 package com.mattheworth.todolist;
 
+import java.util.ArrayList;
+
 public class Todo {
 
-    /**
-     * Represents the title of the to do task
-     */
-    public String todoTitle;
+//    /**
+//     * Represents the title of the to do task
+//     */
+    private String todoTitle;
+//
+//    /**
+//     * Represents the to do description
+//     */
+//    private String todoDescription;
+//
+//    /**
+//     * Represents the to do priority
+//     */
+//    private String todoPriority;
+//
+//    /**
+//     * Represents the due date of the to do
+//     */
+//    private String todoDate;
+//
+//    /**
+//     * Represents the subtasks of the to do
+//     */
+//    private ArrayList<String> todoSubtasks;
 
     /**
      * Default to do constructor
