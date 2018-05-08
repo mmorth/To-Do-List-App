@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * This Class is used to create the SQLite database for the to do application
@@ -35,7 +38,7 @@ public class DBHandler extends SQLiteOpenHelper {
     /**
      * Stores the todoTitle in the database
      */
-    public static final String COLUMN_TODO_TITLE = "todoTitle";
+    public static final String COLUMN_TODO_TITLE = "todotitle";
 
     /**
      * The constructor for the SQLite database
@@ -49,7 +52,7 @@ public class DBHandler extends SQLiteOpenHelper {
      *      The version of the database
      */
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
 
@@ -57,7 +60,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Create the new table
         String query = "CREATE TABLE " + TABLE_NAME + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ," +
                 COLUMN_TODO_TITLE + " TEXT " +
                 ");";
 
@@ -76,13 +79,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Adds a to do row to the database
-     * @param todo
+     * @param todoTitle
      *      The new to do to add to the database
      */
-    public void addTodo(Todo todo) {
+    public void addTodo(String todoTitle) {
         // Prep to add a row to the database
         ContentValues values = new ContentValues();
-        values.put(COLUMN_TODO_TITLE, todo.getTodoTitle());
+        values.put(COLUMN_TODO_TITLE, todoTitle);
 
         // Object that represents the database we will add a row to
         SQLiteDatabase db = getWritableDatabase();
@@ -94,15 +97,17 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Removes a to do from the database
-     * @param todoName
+     * @param todoTitle
      *      The to do to remove from the database
      */
-    public void deleteTodo(String todoName) {
+    public void deleteTodo(String todoTitle) {
         // Object that represents the database we will add a row to
         SQLiteDatabase db = getWritableDatabase();
 
         // Delete the to do from the database
-        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_TODO_TITLE + "=/" + todoName + "\";");
+        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_TODO_TITLE + "=\"" + todoTitle + "\";");
+//        db.delete(TABLE_NAME, COLUMN_TODO_TITLE + "=?", new String[] {todoTitle});
+        db.close();
     }
 
     /**
@@ -110,30 +115,37 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return
      *      A String that represents the database as a String
      */
-    public String databaseToString() {
+    public ArrayList<String> databaseToArrayList() {
         // Store the database as a String
-        String dbString = "";
+        ArrayList<String> todos = new ArrayList<>();
 
         // Object that represents the database we will add a row to
         SQLiteDatabase db = getWritableDatabase();
 
         // Select all information from the database
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE 1";
+        String query = "SELECT * FROM " + TABLE_NAME;
 
         // Create database cursor
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
 
         // Parse through the database
-        while (!c.isAfterLast()) {
-            if (c.getString(c.getColumnIndex("todoName")) != null) {
-                dbString += c.getString(c.getColumnIndex("todoName"));
-                dbString += "\n";
-            }
+//        while (!c.isAfterLast()) {
+//            if (c.getString(c.getColumnIndex(COLUMN_TODO_TITLE)) != null) {
+//                todos.add(c.getString(c.getColumnIndex(COLUMN_TODO_TITLE)));
+//            }
+//        }
+
+        while(c.moveToNext()) {
+            todos.add(c.getString(c.getColumnIndex(COLUMN_TODO_TITLE)));
         }
 
+        String sizeString = "#" + todos.size();
+        Log.v("dbToArrayList method: ", sizeString);
+
+        // Close and return the database
         db.close();
-        return dbString;
+        return todos;
     }
 
 }

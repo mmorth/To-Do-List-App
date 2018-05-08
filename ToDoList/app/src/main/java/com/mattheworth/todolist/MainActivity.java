@@ -23,6 +23,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Represents the database handler for working with SQLite
      */
-    private DBHandler dbHandler;
+    private DBHandler dbHandler = new DBHandler(this, null, null, 1);
 
     /**
      * Represents the to do ListView adapater
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity
         // Display the correct initial layout of the app
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.v("START: ", "onCreate()");
 
         // Initialize the Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,18 +105,31 @@ public class MainActivity extends AppCompatActivity
         // Create a reference to the ListView
         todoListView = (ListView) findViewById(R.id.todoList);
 
+        // Set the context reference to this activity
         context = this;
+
+        // SQLite database information
+//        dbHandler = new DBHandler(this, null, null, 1);
+
 
         // Create a new to do list card when the user taps the create button.
         createTodoButton.setOnClickListener (
             new Button.OnClickListener() {
                 public void onClick(View v) {
                     if (todoInputTitle.getText() != null && todoInputTitle.getText().toString().length() != 0) {
-                        todoItemList.add(todoInputTitle.getText().toString());
+                        // Create and store the to do in the database
+                        String todoTitle = todoInputTitle.getText().toString();
+                        todoItemList.add(todoTitle);
+                        dbHandler.addTodo(todoTitle);
+
                         todoInputTitle.setText("");
 
+                        // Display the new to do on screen
                         todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
                         todoListView.setAdapter(todoListAdapter);
+
+                        String stringListSize = "#" + todoItemList.size();
+                        Log.v("Size after add: ", stringListSize);
                     }
                 }
             }
@@ -133,22 +149,17 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
+        // Display all previously stored to dos
+        todoItemList = dbHandler.databaseToArrayList();
+        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        todoListView.setAdapter(todoListAdapter);
 
-        // SQLite database information
-        dbHandler = new DBHandler(this, null, null, 1);
-
-
-
-
-    }
-
-
-    public void printDatabase() {
-        String dbString = dbHandler.databaseToString();
+        String stringListSize = "#" + todoItemList.size();
+        Log.v("Size after onCreate(): ", stringListSize);
 
     }
 
-    // Need to add and remove the Todo objects to and from the database when they are created and deleted
+    // ----------------------- Custom Methods ---------------------------------------------
 
     /**
      * Deletes a to do item from the list
@@ -159,6 +170,7 @@ public class MainActivity extends AppCompatActivity
         View parent = (View) view.getParent();
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
         String task = String.valueOf(taskTextView.getText());
+        dbHandler.deleteTodo(task);
         todoItemList.remove(task);
         todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
@@ -173,12 +185,25 @@ public class MainActivity extends AppCompatActivity
         View parent = (View) view.getParent();
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
         String task = String.valueOf(taskTextView.getText());
+        dbHandler.deleteTodo(task);
         todoItemList.remove(task);
         todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
 
-        // Put the completed to do in an archive list
+        // TODO: Put the completed to do in an archive list
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        todoItemList = dbHandler.databaseToArrayList();
+
+        Log.d("RESUMED: ", "onResume");
+
+        String stringListSize = "#" + todoItemList.size();
+        Log.v("Size after onResume: ", stringListSize);
     }
 
     // ----------------------- Drawer Menu Methods ------------------------------------
