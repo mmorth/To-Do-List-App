@@ -53,14 +53,19 @@ public class MainActivity extends AppCompatActivity
     private ListView todoListView;
 
     /**
-     * Represents the list that will be used to populate the to do list ListView
+     * Represents the to do list order for the to do primary keys
      */
-    private static ArrayList<String> todoItemList = new ArrayList<>();
+    private static ArrayList<Integer> todoPrimaryKeys = new ArrayList<>();
 
     /**
      * Represents the database handler for working with SQLite
      */
     private DBHandler dbHandler = new DBHandler(this, null, null, 1);
+
+    /**
+     * Keeps track of the primary key of the to dos
+     */
+    private int todoPrimaryKey = 0;
 
     /**
      * Represents the to do ListView adapater
@@ -108,10 +113,6 @@ public class MainActivity extends AppCompatActivity
         // Set the context reference to this activity
         context = this;
 
-        // SQLite database information
-//        dbHandler = new DBHandler(this, null, null, 1);
-
-
         // Create a new to do list card when the user taps the create button.
         createTodoButton.setOnClickListener (
             new Button.OnClickListener() {
@@ -119,17 +120,19 @@ public class MainActivity extends AppCompatActivity
                     if (todoInputTitle.getText() != null && todoInputTitle.getText().toString().length() != 0) {
                         // Create and store the to do in the database
                         String todoTitle = todoInputTitle.getText().toString();
-                        todoItemList.add(todoTitle);
-                        dbHandler.addTodo(todoTitle);
+
+                        // Store the primary key of the to do item in a certain position
+                        todoPrimaryKeys.add(todoPrimaryKey);
+
+                        Todo createTodo = new Todo(todoTitle);
+
+                        dbHandler.addTodo(createTodo);
 
                         todoInputTitle.setText("");
 
                         // Display the new to do on screen
-                        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+                        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoTitles().toArray(new String[0]));
                         todoListView.setAdapter(todoListAdapter);
-
-                        String stringListSize = "#" + todoItemList.size();
-                        Log.v("Size after add: ", stringListSize);
                     }
                 }
             }
@@ -142,22 +145,27 @@ public class MainActivity extends AppCompatActivity
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         // Render the to do details activity page
                         Intent todoDetailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
+                        int todoPK = todoPrimaryKeys.get(position);
+                        Todo todoClicked = dbHandler.getTodoInfo(todoPK);
+
+                        ArrayList<String> todoSubtasks = dbHandler.getTodoSubtasks(todoPK);
+
+                        // Handle with the adapter the same way we did for to dos to display them in the ListView
+
                         String todoTitle = String.valueOf(parent.getItemAtPosition(position));
                         todoDetailsIntent.putExtra("todoTitle", todoTitle);
+                        todoDetailsIntent.putExtra();
                         startActivity(todoDetailsIntent);
                     }
                 }
         );
 
         // Display all previously stored to dos
-        todoItemList = dbHandler.databaseToArrayList();
-        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoTitles().toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
-
-        String stringListSize = "#" + todoItemList.size();
-        Log.v("Size after onCreate(): ", stringListSize);
-
     }
+
+    // Auto increment an int variable to associate an id with the to do and then make a method in the db handler to lookup and return a Todo object based on that information
 
     // ----------------------- Custom Methods ---------------------------------------------
 
@@ -194,17 +202,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        todoItemList = dbHandler.databaseToArrayList();
-
-        Log.d("RESUMED: ", "onResume");
-
-        String stringListSize = "#" + todoItemList.size();
-        Log.v("Size after onResume: ", stringListSize);
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        todoItemList = dbHandler.databaseToArrayList();
+//
+//        Log.d("RESUMED: ", "onResume");
+//
+//        String stringListSize = "#" + todoItemList.size();
+//        Log.v("Size after onResume: ", stringListSize);
+//    }
 
     // ----------------------- Drawer Menu Methods ------------------------------------
 
