@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Represents the database handler for working with SQLite
      */
-    private DBHandler dbHandler = new DBHandler(this, null, null, 1);
+    private DBHandler dbHandler = new DBHandler(this, null, null, 3);
 
     /**
      * Keeps track of the primary key of the to dos
@@ -145,16 +145,19 @@ public class MainActivity extends AppCompatActivity
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         // Render the to do details activity page
                         Intent todoDetailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
-                        int todoPK = todoPrimaryKeys.get(position);
+                        int todoPK = dbHandler.getTodopks().get(position);
                         Todo todoClicked = dbHandler.getTodoInfo(todoPK);
 
                         ArrayList<String> todoSubtasks = dbHandler.getTodoSubtasks(todoPK);
 
-                        // Handle with the adapter the same way we did for to dos to display them in the ListView
-
                         String todoTitle = String.valueOf(parent.getItemAtPosition(position));
+                        todoDetailsIntent.putExtra("todoPK", todoPK);
                         todoDetailsIntent.putExtra("todoTitle", todoTitle);
-                        todoDetailsIntent.putExtra();
+                        todoDetailsIntent.putExtra("todoDescription", todoClicked.getTodoDescription());
+                        todoDetailsIntent.putExtra("todoPriority", todoClicked.getTodoPriority());
+                        todoDetailsIntent.putExtra("todoDate", todoClicked.getTodoDate());
+                        todoDetailsIntent.putExtra("todoSubtasks", todoSubtasks);
+
                         startActivity(todoDetailsIntent);
                     }
                 }
@@ -177,10 +180,11 @@ public class MainActivity extends AppCompatActivity
     public void deleteTodo(View view) {
         View parent = (View) view.getParent();
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
+        TextView taskKey = (TextView) parent.findViewById(R.id.todoKey);
         String task = String.valueOf(taskTextView.getText());
-        dbHandler.deleteTodo(task);
-        todoItemList.remove(task);
-        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        int todoKey = Integer.parseInt((String) taskKey.getText());
+        dbHandler.deleteTodo(todoKey);
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoTitles().toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
     }
 
@@ -194,8 +198,7 @@ public class MainActivity extends AppCompatActivity
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
         String task = String.valueOf(taskTextView.getText());
         dbHandler.deleteTodo(task);
-        todoItemList.remove(task);
-        todoListAdapter = new TodoAdapter(context, todoItemList.toArray(new String[0]));
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoTitles().toArray(new String[0]));
         todoListView.setAdapter(todoListAdapter);
 
         // TODO: Put the completed to do in an archive list

@@ -18,7 +18,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * Stores the version of the database
      * Update when there are updates to the data
      */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     /**
      * The file to use for the database
@@ -149,6 +149,28 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     /**
+     * Adds a to do row to the database
+     * @param todo
+     *      The new to do to add to the database
+     */
+    public void updateTodo(int todoPK, Todo todo) {
+        // Prep to add a row to the database
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TODO_TITLE, todo.getTodoTitle());
+        values.put(COLUMN_TODO_DESCRIPTION, todo.getTodoDescription());
+        values.put(COLUMN_TODO_PRIORITY, todo.getTodoPriority());
+        values.put(COLUMN_TODO_DATE, todo.getTodoDate());
+
+        // Object that represents the database we will add a row to
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Add product to databases
+        String filter = COLUMN_TODO_ID + " = " + todoPK;
+        db.update(TABLE_TODO, values, filter, null);
+        db.close();
+    }
+
+    /**
      * Removes a to do from the database
      * @param todoTitle
      *      The to do to remove from the database
@@ -164,13 +186,29 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     /**
+     * Removes a to do from the database
+     * @param todoID
+     *      The to do to remove from the database
+     */
+    public void deleteTodo(int todoID) {
+        // Object that represents the database we will add a row to
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Delete the to do from the database
+        db.execSQL("DELETE FROM " + TABLE_TODO + " WHERE " + COLUMN_TODO_ID + "=\"" + todoID + "\";");
+
+        db.close();
+    }
+
+    /**
      * Adds a subtask row to the database
      * @param subtaskTitle
      *      The new subtask to add to the database
      */
-    public void addSubtask(String subtaskTitle) {
+    public void addSubtask(String subtaskTitle, int todoPK) {
         // Prep to add a row to the database
         ContentValues values = new ContentValues();
+        values.put(COLUMN_SUBTASK_TODO, todoPK);
         values.put(COLUMN_SUBTASK_TITLE, subtaskTitle);
 
         // Object that represents the database we will add a row to
@@ -235,13 +273,12 @@ public class DBHandler extends SQLiteOpenHelper {
         // Object that represents the database we will add a row to
         SQLiteDatabase db = getWritableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_TODO_ID + " = " + todoPK;
+        String query = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_TODO_ID + " = " + todoPK + ";";
 
         // Create database cursor
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
 
-        // Set the Todo information that we will return
         // Set the Todo information that we will return
         Todo getTodo = new Todo();
 
@@ -265,7 +302,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // Object that represents the database we will add a row to
         SQLiteDatabase db = getWritableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_TODO_ID + " = " + todoPK;
+        String query = "SELECT * FROM " + TABLE_SUBTASK + " WHERE " + COLUMN_SUBTASK_TODO + " = " + todoPK;
 
         // Create database cursor
         Cursor c = db.rawQuery(query, null);
@@ -277,7 +314,35 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // Close and return the database
         db.close();
+        c.close();
         return subtasks;
+    }
+
+    /**
+     * Returns a String ArrayList with the primary keys associated to the to do stored in the database
+     * @return
+     *      A String ArrayList with the primary keys associated to the to do stored in the database
+     */
+    public ArrayList<Integer> getTodopks() {
+        // Store the database as a String
+        ArrayList<Integer> pks = new ArrayList<>();
+
+        // Object that represents the database we will add a row to
+        SQLiteDatabase db = getWritableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_TODO;
+
+        // Create database cursor
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        while(c.moveToNext()) {
+            pks.add(c.getInt(c.getColumnIndex(COLUMN_TODO_ID)));
+        }
+
+        // Close and return the database
+        db.close();
+        return pks;
     }
 
 }

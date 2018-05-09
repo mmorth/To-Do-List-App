@@ -33,6 +33,8 @@ extends ArrayAdapter<String>  {
         String todoTitle = getItem(position);
         TextView todoTitleText = (TextView) customView.findViewById(R.id.todoTitle);
         todoTitleText.setText(todoTitle);
+        TextView todoKey = (TextView) customView.findViewById(R.id.todoKey);
+//        todoKey.setText(position);
         Button deleteButton = (Button) customView.findViewById(R.id.deleteTodo);
         deleteButton.setText("Delete");
 

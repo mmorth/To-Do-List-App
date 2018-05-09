@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,67 +34,72 @@ public class TodoDetailsActivity extends AppCompatActivity
     /**
      * Represents the to do title
      */
-    EditText todoDetailsTitle;
+    private EditText todoDetailsTitle;
 
     /**
      * Represents the to do description widget
      */
-    EditText todoDetailsDescription;
+    private EditText todoDetailsDescription;
 
     /**
      * Represents the to do drop down priority menu widget
      */
-    Spinner todoDetailsPriority;
+    private Spinner todoDetailsPriority;
 
     /**
      * Represents the to do label widget
      */
-    EditText todoDetailsLabel;
+    private EditText todoDetailsLabel;
 
     /**
      * Represents the to do subtask input widget
      */
-    EditText todoSubtaskInput;
+    private EditText todoSubtaskInput;
 
     /**
      * Represents the to do details create button widget
      */
-    Button todoDetailsCreateButton;
+    private Button todoDetailsCreateButton;
 
     /**
      * Represents the to do details subtask list
      */
-    ListView todoDetailsSubtaskList;
+    private ListView todoDetailsSubtaskList;
 
     /**
      * Represents the to do details priority label
      */
-    TextView todoDetailsPriorityLabel;
+    private TextView todoDetailsPriorityLabel;
 
     /**
      * Represents the to do details label TextView
      */
-    TextView todoDetailsLabelLabel;
+    private TextView todoDetailsLabelLabel;
 
     /**
-     * Represents the to do details back button
+     * Represents the to do details save button
      */
-    Button todoDetailsBackButton;
-
-    /**
-     * Stores the to do details subtasks
-     */
-    ArrayList<String> todoDetailsSubtasks = new ArrayList<>();
+    private Button todoDetailsSaveButton;
 
     /**
      * Represents the to do ListView adapater
      */
-    ListAdapter todoListAdapter;
+    private ListAdapter todoListAdapter;
 
     /**
      * Represents the context for the MainActivity
      */
-    Context context;
+    private Context context;
+
+    /**
+     * Represents the database handler for working with SQLite
+     */
+    private DBHandler dbHandler = new DBHandler(this, null, null, 3);
+
+    /**
+     * Stores the value of the to do primary key the subtask belongs to
+     */
+    private int todoID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,19 +123,36 @@ public class TodoDetailsActivity extends AppCompatActivity
 
         // Pass information from the previous activity
         Intent mainIntent = getIntent();
+        final int todoPK = mainIntent.getIntExtra("todoPK", 0);
+        todoID = todoPK;
         String todoTitle = mainIntent.getStringExtra("todoTitle");
+        String todoDescription = mainIntent.getStringExtra("todoDescription");
+        final String todoPriority = mainIntent.getStringExtra("todoPriority");
+        String todoDate = mainIntent.getStringExtra("todoDate");
+        ArrayList<String> subtasks = mainIntent.getStringArrayListExtra("todoSubtasks");
 
         // Initialize the widget references
         todoDetailsTitle = (EditText) findViewById(R.id.todoDetailsTitle);
         todoDetailsDescription = (EditText) findViewById(R.id.todoDetailsDescription);
+        todoDetailsDescription.setText(todoDescription);
         todoDetailsPriority = (Spinner) findViewById(R.id.todoDetailsPriority);
+
+        if (todoPriority.equals("1 - Urgent")) {
+            todoDetailsPriority.setSelection(0);
+        } else if (todoPriority.equals("2 - Important")) {
+            todoDetailsPriority.setSelection(1);
+        } else {
+            todoDetailsPriority.setSelection(2);
+        }
+
         todoDetailsLabel = (EditText) findViewById(R.id.todoDetailsLabel);
+        todoDetailsLabel.setText(todoDate);
         todoSubtaskInput = (EditText) findViewById(R.id.todoDetailsSubtaskInput);
         todoDetailsCreateButton = (Button) findViewById(R.id.todoDetailsCreateButton);
         todoDetailsSubtaskList = (ListView) findViewById(R.id.todoDetailsSubtaskList);
         todoDetailsPriorityLabel = (TextView) findViewById(R.id.todoDetailsPriorityLabel);
         todoDetailsLabelLabel = (TextView) findViewById(R.id.todoDetailsLabelLabel);
-        todoDetailsBackButton = (Button) findViewById(R.id.todoDetailsBackButton);
+        todoDetailsSaveButton = (Button) findViewById(R.id.todoDetailsBackButton);
 
         todoDetailsTitle.setText(todoTitle);
 
@@ -140,17 +163,36 @@ public class TodoDetailsActivity extends AppCompatActivity
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         if (todoSubtaskInput.getText() != null && todoSubtaskInput.getText().toString().length() != 0) {
-                            todoDetailsSubtasks.add(todoSubtaskInput.getText().toString());
+                            dbHandler.addSubtask(todoSubtaskInput.getText().toString(), todoPK);
                             todoSubtaskInput.setText("");
 
-                            todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+                            todoListAdapter = new TodoAdapter(context, dbHandler.getTodoSubtasks(todoPK).toArray(new String[0]));
                             todoDetailsSubtaskList.setAdapter(todoListAdapter);
                         }
                     }
                 }
         );
 
+        // Save the content of the to do when the save button is clicked
+        todoDetailsSaveButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        // Save to do details contents
+                        Todo saveTodo = new Todo();
+                        saveTodo.setTodoTitle(todoDetailsTitle.getText().toString());
+                        saveTodo.setTodoPriority(todoDetailsPriority.getSelectedItem().toString());
+                        saveTodo.setTodoDescription(todoDetailsDescription.getText().toString());
+                        saveTodo.setTodoDate(todoDetailsLabel.getText().toString());
+
+                        dbHandler.updateTodo(todoPK, saveTodo);
+                    }
+                }
+        );
+
         MyEditTextDatePicker myEditTextDatePicker = new MyEditTextDatePicker(context);
+
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoSubtasks(todoPK).toArray(new String[0]));
+        todoDetailsSubtaskList.setAdapter(todoListAdapter);
 
     }
 
@@ -163,8 +205,8 @@ public class TodoDetailsActivity extends AppCompatActivity
         View parent = (View) view.getParent();
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
         String task = String.valueOf(taskTextView.getText());
-        todoDetailsSubtasks.remove(task);
-        todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+        dbHandler.deleteSubtask(task);
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoSubtasks(todoID).toArray(new String[0]));
         todoDetailsSubtaskList.setAdapter(todoListAdapter);
     }
 
@@ -177,8 +219,8 @@ public class TodoDetailsActivity extends AppCompatActivity
         View parent = (View) view.getParent();
         TextView taskTextView = (TextView) parent.findViewById(R.id.todoTitle);
         String task = String.valueOf(taskTextView.getText());
-        todoDetailsSubtasks.remove(task);
-        todoListAdapter = new TodoAdapter(context, todoDetailsSubtasks.toArray(new String[0]));
+        dbHandler.deleteSubtask(task);
+        todoListAdapter = new TodoAdapter(context, dbHandler.getTodoSubtasks(todoID).toArray(new String[0]));
         todoDetailsSubtaskList.setAdapter(todoListAdapter);
 
         // Put the completed to do in an archive list
