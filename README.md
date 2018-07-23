@@ -1,3 +1,4 @@
+
 # To Do List Android Application
 An Android to do list application
 
@@ -16,6 +17,7 @@ Using Git Bash or the Linux Terminal, navigate to the folder where you want the 
 git clone https://github.com/mmorth/To-Do-List-App.git
 ```
 Open the root project folder in Android Studio
+
 Press the play button in Android Studio to run the code on the emulator or physical device
 
 ## Built With
